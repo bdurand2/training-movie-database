@@ -30,4 +30,41 @@ class People
      * @ORM\Column(type="text")
      */
     private $description;
+
+    // Getters and Setters
+
+    public function getId() : integer
+    {
+    	return $this->id;
+    }
+
+    public function getFirstName() : string
+    {
+    	return $this->first_name;
+    }
+
+    public function setFirstName($first_name)
+    {
+    	$this->first_name = $firstname;
+    }
+
+    public function getLastName() : string
+    {
+    	return $this->last_name;
+    }
+
+    public function setLastName($last_name)
+    {
+    	$this->last_name = $lastname;
+    }
+
+    public function getDescription() : string
+    {
+    	return $this->description;
+    }
+
+    public function setDescription($description)
+    {
+    	$this->description = $description;
+    }
 }

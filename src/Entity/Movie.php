@@ -33,12 +33,12 @@ class Movie
 
     // Getters and Setters
 
-    public function getId()
+    public function getId() : integer
     {
     	return $this->id;
     }
 
-    public function getTitle()
+    public function getTitle() : string
     {
     	return $this->title;
     }
@@ -48,7 +48,7 @@ class Movie
     	$this->title = $title;
     }
 
-    public function getReleaseDate()
+    public function getReleaseDate() : string
     {
     	return $this->release_date;
     }
@@ -58,7 +58,7 @@ class Movie
     	$this->release_date = $release_date;
     }
 
-    public function getDescription()
+    public function getDescription() : string
     {
     	return $this->description;
     }
