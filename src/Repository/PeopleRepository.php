@@ -13,16 +13,19 @@ class PeopleRepository extends ServiceEntityRepository
         parent::__construct($registry, People::class);
     }
 
-    /*
-    public function findBySomething($value)
+    public function create($params) : People
     {
-        return $this->createQueryBuilder('p')
-            ->where('p.something = :value')->setParameter('value', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        $em = $this->getDoctrine()->getManager();
+
+        $people = new People();
+        $people->setTitle($params['first_name']);
+        $people->setReleaseDate($params['last_name']);
+        $people->setDescription($params['description']);
+
+        $em->persist($people);
+
+        $em->flush();
+
+        return $people;
     }
-    */
 }

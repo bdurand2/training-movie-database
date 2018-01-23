@@ -13,16 +13,19 @@ class MovieRepository extends ServiceEntityRepository
         parent::__construct($registry, Movie::class);
     }
 
-    /*
-    public function findBySomething($value)
+    public function create($params) : Movie
     {
-        return $this->createQueryBuilder('m')
-            ->where('m.something = :value')->setParameter('value', $value)
-            ->orderBy('m.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        $em = $this->getDoctrine()->getManager();
+
+        $movie = new Movie();
+        $movie->setTitle($params['title']);
+        $movie->setReleaseDate($params['release_date']);
+        $movie->setDescription($params['description']);
+
+        $em->persist($movie);
+
+        $em->flush();
+
+        return $movie;
     }
-    */
 }
