@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -30,6 +31,15 @@ class People
      * @ORM\Column(type="text")
      */
     private $description;
+
+    /**
+     * @OneToMany(targetEntity="MovieCrew", mappedBy="people")
+     */
+    private $movies;
+
+    public function __construct() {
+        $this->movies = new ArrayCollection();
+    }
 
     // Getters and Setters
 
