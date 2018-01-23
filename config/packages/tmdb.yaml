@@ -1,0 +1,2 @@
+tmdb_symfony:
+    api_key: '%env(TMDB_API_KEY)%'
