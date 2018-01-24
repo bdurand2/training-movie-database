@@ -1,0 +1,21 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+	<h1>Edition de {{ movie.getTitle() }}</h1>
+	<form method="POST" action="{{path('movie.update', {'id': movie.getId()})}}">
+		<input type='hidden' name='_method' value='PUT'>
+		<div class="form-group">
+			<label for="title">Titre</label>
+			<input type="text" name="title" value="{{movie.getTitle()}}" />
+		</div>
+		<div class="form-group">
+			<label for="title">Date</label>
+			<input type="date" name="release_date" value="{{movie.getReleaseDate().format('Y-m-d')}}" />
+		</div>
+		<div class="form-group">
+			<label for="title">Description</label>
+			<input type="textarea" name="description" value="{{movie.getDescription()}}" />
+		</div>
+		<input type="submit" value="Modifier" />
+	</form>
+{% endblock %}
