@@ -13,6 +13,22 @@ class MovieCrewRepository extends ServiceEntityRepository
         parent::__construct($registry, MovieCrew::class);
     }
 
+    public function create($params) : MovieCrew
+    {
+        $em = $this->getEntityManager();
+
+        $movieCrew = new MovieCrew();
+        $movieCrew->setPeople($params['people']);
+        $movieCrew->setMovie($params['movie']);
+        $movieCrew->setJob($params['job']);
+
+        $em->persist($movieCrew);
+
+        $em->flush();
+
+        return $movieCrew;
+    }
+
     /*
     public function findBySomething($value)
     {

@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\OneToMany;
+use Doctrine\ORM\PersistentCollection;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\MovieRepository")
@@ -74,7 +75,7 @@ class Movie
     	$this->title = $title;
     }
 
-    public function getReleaseDate() : string
+    public function getReleaseDate() : \DateTime
     {
     	return $this->release_date;
     }
@@ -92,5 +93,10 @@ class Movie
     public function setDescription($description)
     {
     	$this->description = $description;
+    }
+
+    public function getCrew() : PersistentCollection
+    {
+        return $this->crew;
     }
 }

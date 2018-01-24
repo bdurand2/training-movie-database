@@ -5,6 +5,8 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\OneToMany;
+use Doctrine\ORM\PersistentCollection;
+
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PeopleRepository")
  */
@@ -91,5 +93,10 @@ class People
     public function setDescription($description)
     {
     	$this->description = $description;
+    }
+
+    public function getMovies() : PersistentCollection
+    {
+        return $this->movies;
     }
 }

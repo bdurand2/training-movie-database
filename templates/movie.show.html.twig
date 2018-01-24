@@ -1,0 +1,13 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+	<h1>{{ movie.getTitle() }}, sortie le {{ movie.getReleaseDate().format('d/m/Y') }}</h1>
+	<h2>Description</h2>
+	<p>{{ movie.getDescription() }}</p>
+	<h2>Équipe</h2>
+	<ul>
+		{% for member in movie.getCrew() %}
+			<li><a href="{{ path('people.show', {'id': member.getPeople().getId()}) }}">{{member.getPeople().getFirstName()}} - {{member.getJob()}}</a></li>
+		{% endfor %}
+	</ul>
+{% endblock %}
