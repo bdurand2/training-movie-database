@@ -4,7 +4,7 @@ namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-
+use Doctrine\ORM\Mapping\OneToMany;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PeopleRepository")
  */
@@ -16,6 +16,11 @@ class People
      * @ORM\Column(type="integer")
      */
     private $id;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $tmdb_id;
 
     /**
      * @ORM\Column(type="text")
@@ -43,19 +48,29 @@ class People
 
     // Getters and Setters
 
-    public function getId() : integer
+    public function getId() : int
     {
     	return $this->id;
     }
 
+    public function setTMDBId($tmdb_id)
+    {
+        $this->tmdb_id = $tmdb_id;
+    }
+
+    public function getTMDBId() : string
+    {
+        return $this->tmdb_id;
+    }
+
     public function getFirstName() : string
     {
-    	return $this->first_name;
+        return $this->first_name;
     }
 
     public function setFirstName($first_name)
     {
-    	$this->first_name = $firstname;
+    	$this->first_name = $first_name;
     }
 
     public function getLastName() : string
@@ -65,7 +80,7 @@ class People
 
     public function setLastName($last_name)
     {
-    	$this->last_name = $lastname;
+    	$this->last_name = $last_name;
     }
 
     public function getDescription() : string

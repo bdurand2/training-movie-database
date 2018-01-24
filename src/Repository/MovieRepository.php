@@ -15,7 +15,7 @@ class MovieRepository extends ServiceEntityRepository
 
     public function create($params) : Movie
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->getEntityManager();
 
         $movie = new Movie();
         $movie->setTitle($params['title']);
@@ -27,5 +27,15 @@ class MovieRepository extends ServiceEntityRepository
         $em->flush();
 
         return $movie;
+    }
+
+    public function findByTMDBId($id)
+    {
+        return $this->createQueryBuilder('m')
+            ->where('m.tmdb_id = :value')->setParameter('value', $id)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getResult()
+        ;
     }
 }

@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\OneToMany;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\MovieRepository")
@@ -16,6 +17,11 @@ class Movie
      * @ORM\Column(type="integer")
      */
     private $id;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $tmdb_id;
 
     /**
      * @ORM\Column(type="text")
@@ -43,9 +49,19 @@ class Movie
 
     // Getters and Setters
 
-    public function getId() : integer
+    public function getId() : int
     {
     	return $this->id;
+    }
+
+    public function setTMDBId($tmdb_id)
+    {
+        $this->tmdb_id = $tmdb_id;
+    }
+
+    public function getTMDBId() : string
+    {
+        return $this->tmdb_id;
     }
 
     public function getTitle() : string

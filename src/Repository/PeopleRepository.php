@@ -15,11 +15,12 @@ class PeopleRepository extends ServiceEntityRepository
 
     public function create($params) : People
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->getEntityManager();
 
         $people = new People();
-        $people->setTitle($params['first_name']);
-        $people->setReleaseDate($params['last_name']);
+        $people->setTMDBId($params['tmdb_id']);
+        $people->setFirstName($params['first_name']);
+        $people->setLastName($params['last_name']);
         $people->setDescription($params['description']);
 
         $em->persist($people);
@@ -27,5 +28,15 @@ class PeopleRepository extends ServiceEntityRepository
         $em->flush();
 
         return $people;
+    }
+
+    public function findByTMDBId($id)
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.tmdb_id = :value')->setParameter('value', $id)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getResult()
+        ;
     }
 }
