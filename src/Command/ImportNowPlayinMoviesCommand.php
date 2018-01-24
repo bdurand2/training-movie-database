@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Entity\Movie;
+use App\Entity\MovieCrew;
 use App\Entity\People;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Symfony\Component\Console\Command\Command;
@@ -53,7 +54,7 @@ class ImportNowPlayinMoviesCommand extends Command
                 ->findByTMDBId($data->getId());
 
             if (!$persistedMovie) {
-                $doctrine->getRepository(Movie::class)
+                $movie = $doctrine->getRepository(Movie::class)
                     ->create([
                         'tmdb_id' => $data->getId(),
                         'title' => $data->getTitle(),
@@ -61,7 +62,9 @@ class ImportNowPlayinMoviesCommand extends Command
                         'description' => $data->getOverview(),
                     ]);
 
-                $credits = $movieRepository->getCredits($data->getId());
+                $credits = $movieRepository->getCredits($data->getId(), [
+                    'language' => 'fr-FR',
+                ]);
 
                 /* Process crew and cas members separately, because the API provides
                 two different collections */
@@ -71,14 +74,19 @@ class ImportNowPlayinMoviesCommand extends Command
                         ->findByTMDBId($peopleData->getId());
 
                     if (!$persistedPeople) {
-                        $peopleDetails = $peopleRepository->load($peopleData->getId());
-
-                        $doctrine->getRepository(People::class)
+                        $people = $doctrine->getRepository(People::class)
                             ->create([
                                 'tmdb_id' => $peopleData->getId(),
                                 'first_name' => $peopleData->getName(),
                                 'last_name' => $peopleData->getName(),
                                 'description' => $peopleData->getDepartment(),
+                            ]);
+
+                        $doctrine->getRepository(MovieCrew::class)
+                            ->create([
+                                'people' => $people,
+                                'movie' => $movie,
+                                'job' => $peopleData->getJob(),
                             ]);
                     }
                 }
@@ -89,14 +97,19 @@ class ImportNowPlayinMoviesCommand extends Command
                         ->findByTMDBId($peopleData->getId());
 
                     if (!$persistedPeople) {
-                        $peopleDetails = $peopleRepository->load($peopleData->getId());
-
-                        $doctrine->getRepository(People::class)
+                        $people = $doctrine->getRepository(People::class)
                             ->create([
                                 'tmdb_id' => $peopleData->getId(),
                                 'first_name' => $peopleData->getName(),
                                 'last_name' => $peopleData->getName(),
                                 'description' => $peopleData->getCastId(),
+                            ]);
+
+                        $doctrine->getRepository(MovieCrew::class)
+                            ->create([
+                                'people' => $people,
+                                'movie' => $movie,
+                                'job' => 'Acteur/ice',
                             ]);
                     }
                 }

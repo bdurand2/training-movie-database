@@ -74,7 +74,7 @@ class Movie
     	$this->title = $title;
     }
 
-    public function getReleaseDate() : string
+    public function getReleaseDate() : \DateTime
     {
     	return $this->release_date;
     }
@@ -92,5 +92,10 @@ class Movie
     public function setDescription($description)
     {
     	$this->description = $description;
+    }
+
+    public function getCrew()
+    {
+        return $this->crew;
     }
 }
