@@ -7,7 +7,7 @@
 	<h2>Filmographie</h2>
 	<ul>
 		{% for movie in people.getMovies() %}
-			<li>{{movie.getMovie().getTitle()}} ({{ movie.getMovie().getReleaseDate().format('d/m/Y') }}) - {{movie.getJob()}}</li>
+			<li><a href="{{ path('movie.show', {'id': movie.getMovie().getId()}) }}">{{movie.getMovie().getTitle()}} ({{ movie.getMovie().getReleaseDate().format('d/m/Y') }}) - {{movie.getJob()}}</li>
 		{% endfor %}
 	</ul>
 {% endblock %}
