@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 class MovieController extends Controller
 {
     /**
-     * @Route("/movie", name="movie.index")
+     * @Route("/", name="movie.index")
      */
     public function index()
     {
@@ -32,8 +32,14 @@ class MovieController extends Controller
     		->getManager()
     		->getRepository(Movie::class);
 
+        $movie = $repository->find($id);
+
+        if (!$movie) {
+            throw $this->createNotFoundException('Le film recherché n\'est pas dans la base.');
+        }
+
         return $this->render('movie.show.html.twig', [
-        	'movie' => $repository->find($id),
+        	'movie' => $movie,
         ]);
     }
 }

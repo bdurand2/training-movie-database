@@ -18,8 +18,14 @@ class PeopleController extends Controller
     		->getManager()
     		->getRepository(People::class);
 
+        $people = $repository->find($id);
+
+        if (!$people) {
+            throw $this->createNotFoundException('La personne recherchée n\'est pas dans la base.');
+        }
+
         return $this->render('people.show.html.twig', [
-        	'people' => $repository->find($id),
+        	'people' => $people,
         ]);
     }
 }
