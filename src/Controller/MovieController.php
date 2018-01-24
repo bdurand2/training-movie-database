@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 class MovieController extends Controller
 {
     /**
-     * @Route("/movie", name="movie.index")
+     * @Route("/", name="movie.index")
      */
     public function index()
     {
