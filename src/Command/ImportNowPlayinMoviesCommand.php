@@ -17,6 +17,12 @@ class ImportNowPlayinMoviesCommand extends Command
 {
     protected static $defaultName = 'movies:now-playing';
 
+    protected $doctrine;
+
+    protected $movieRepository;
+
+    protected $peopleRepository;
+
     protected function configure()
     {
         $this->setDescription('Import movies playing now in french theaters')
@@ -27,34 +33,34 @@ class ImportNowPlayinMoviesCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $doctrine = $this->getApplication()
+        $this->doctrine = $this->getApplication()
             ->getKernel()
             ->getContainer()
             ->get('doctrine');
 
-        $movieRepository = $this->getApplication()
+        $this->movieRepository = $this->getApplication()
             ->getKernel()
             ->getContainer()
             ->get('tmdb.movie_repository');
 
-        $peopleRepository = $this->getApplication()
+        $this->peopleRepository = $this->getApplication()
             ->getKernel()
             ->getContainer()
             ->get('tmdb.people_repository');
 
 
-        $movies = $movieRepository->getNowPlaying([
+        $movies = $this->movieRepository->getNowPlaying([
             'region' => 'FR',
             'language' => 'fr-FR',
         ]);
 
         foreach ($movies->getIterator() as $key => $data) {
-            $persistedMovie = $doctrine
+            $persistedMovie = $this->doctrine
                 ->getRepository(Movie::class)
                 ->findByTMDBId($data->getId());
 
             if (!$persistedMovie) {
-                $movie = $doctrine->getRepository(Movie::class)
+                $movie = $this->doctrine->getRepository(Movie::class)
                     ->create([
                         'tmdb_id' => $data->getId(),
                         'title' => $data->getTitle(),
@@ -62,64 +68,55 @@ class ImportNowPlayinMoviesCommand extends Command
                         'description' => $data->getOverview(),
                     ]);
 
-                $credits = $movieRepository->getCredits($data->getId(), [
+                $credits = $this->movieRepository->getCredits($data->getId(), [
                     'language' => 'fr-FR',
                 ]);
 
                 /* Process crew and cas members separately, because the API provides
                 two different collections */
                 foreach ($credits->getCrew()->getIterator() as $peopleData) {
-                    $persistedPeople = $doctrine
-                        ->getRepository(People::class)
-                        ->findByTMDBId($peopleData->getId());
-
-                    if (!$persistedPeople) {
-                        $peopleDetails = $peopleRepository->load($peopleData->getId());
-
-                        $people = $doctrine->getRepository(People::class)
-                            ->create([
-                                'tmdb_id' => $peopleData->getId(),
-                                'first_name' => $peopleData->getName(),
-                                'last_name' => $peopleData->getName(),
-                                'description' => $peopleDetails->getBiography(),
-                            ]);
-
-                        $doctrine->getRepository(MovieCrew::class)
-                            ->create([
-                                'people' => $people,
-                                'movie' => $movie,
-                                'job' => $peopleData->getJob(),
-                            ]);
-                    }
+                    $this->createRelatedPeople($movie, $peopleData, 'crew');
                 }
 
                 foreach ($credits->getCast()->getIterator() as $peopleData) {
-                    $persistedPeople = $doctrine
-                        ->getRepository(People::class)
-                        ->findByTMDBId($peopleData->getId());
-
-                    if (!$persistedPeople) {
-                        $peopleDetails = $peopleRepository->load($peopleData->getId());
-
-                        $people = $doctrine->getRepository(People::class)
-                            ->create([
-                                'tmdb_id' => $peopleData->getId(),
-                                'first_name' => $peopleData->getName(),
-                                'last_name' => $peopleData->getName(),
-                                'description' => '',
-                            ]);
-
-                        $doctrine->getRepository(MovieCrew::class)
-                            ->create([
-                                'people' => $people,
-                                'movie' => $movie,
-                                'job' => 'Acteur/ice',
-                            ]);
-                    }
+                    $this->createRelatedPeople($movie, $peopleData, 'cast');
                 }
             }
         }
 
         $io->success('Movies imported.');
+    }
+
+    /**
+     * Creates a related people
+     *
+     * @param App\Entity\Movie the movie to assiciate with the newly created
+     *        people
+     * @param array $data the data
+     * @param string peopleType the type of people (crew/cast)
+     */
+    protected function createRelatedPeople($movie, $data, $peopleType) {
+        $persistedPeople = $this->doctrine
+            ->getRepository(People::class)
+            ->findByTMDBId($data->getId());
+
+        if (!$persistedPeople) {
+            $details = $this->peopleRepository->load($data->getId());
+
+            $people = $this->doctrine->getRepository(People::class)
+                ->create([
+                    'tmdb_id' => $data->getId(),
+                    'first_name' => $data->getName(),
+                    'last_name' => $data->getName(),
+                    'description' => $details->getBiography() ?: '',
+                ]);
+
+            $this->doctrine->getRepository(MovieCrew::class)
+                ->create([
+                    'people' => $people,
+                    'movie' => $movie,
+                    'job' => $peopleType === 'crew' ? $data->getJob() : 'Acteur/rice',
+                ]);
+        }
     }
 }
