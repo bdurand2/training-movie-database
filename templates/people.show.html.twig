@@ -1,0 +1,13 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+	<h1>{{ people.getFirstName() }}</h1>
+	<h2>Biographie</h2>
+	<p>{{ people.getDescription() }}</p>
+	<h2>Filmographie</h2>
+	<ul>
+		{% for movie in people.getMovies() %}
+			<li>{{movie.getMovie().getTitle()}} ({{ movie.getMovie().getReleaseDate().format('d/m/Y') }}) - {{movie.getJob()}}</li>
+		{% endfor %}
+	</ul>
+{% endblock %}

@@ -74,12 +74,14 @@ class ImportNowPlayinMoviesCommand extends Command
                         ->findByTMDBId($peopleData->getId());
 
                     if (!$persistedPeople) {
+                        $peopleDetails = $peopleRepository->load($peopleData->getId());
+
                         $people = $doctrine->getRepository(People::class)
                             ->create([
                                 'tmdb_id' => $peopleData->getId(),
                                 'first_name' => $peopleData->getName(),
                                 'last_name' => $peopleData->getName(),
-                                'description' => $peopleData->getDepartment(),
+                                'description' => $peopleDetails->getBiography(),
                             ]);
 
                         $doctrine->getRepository(MovieCrew::class)
@@ -97,12 +99,14 @@ class ImportNowPlayinMoviesCommand extends Command
                         ->findByTMDBId($peopleData->getId());
 
                     if (!$persistedPeople) {
+                        $peopleDetails = $peopleRepository->load($peopleData->getId());
+
                         $people = $doctrine->getRepository(People::class)
                             ->create([
                                 'tmdb_id' => $peopleData->getId(),
                                 'first_name' => $peopleData->getName(),
                                 'last_name' => $peopleData->getName(),
-                                'description' => $peopleData->getCastId(),
+                                'description' => '',
                             ]);
 
                         $doctrine->getRepository(MovieCrew::class)

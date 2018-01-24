@@ -7,7 +7,7 @@
 	<h2>Équipe</h2>
 	<ul>
 		{% for member in movie.getCrew() %}
-			<li>{{member.getPeople().getFirstName()}} - {{member.getJob()}}</li>
+			<li><a href="{{ path('people.show', {'id': member.getPeople().getId()}) }}">{{member.getPeople().getFirstName()}} - {{member.getJob()}}</a></li>
 		{% endfor %}
 	</ul>
 {% endblock %}
