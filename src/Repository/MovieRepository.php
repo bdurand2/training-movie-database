@@ -29,6 +29,32 @@ class MovieRepository extends ServiceEntityRepository
         return $movie;
     }
 
+    public function update($id, $params) : Movie
+    {
+        $em = $this->getEntityManager();
+
+        $movie = $em->getRepository(Movie::class)->find($id);
+
+        $movie->setTitle($params['title']);
+        $movie->setReleaseDate(\DateTime::createFromFormat('Y-m-d', $params['release_date']));
+        $movie->setDescription($params['description']);
+
+        $em->flush();
+
+        return $movie;
+    }
+
+    public function delete($id)
+    {
+        $em = $this->getEntityManager();
+
+        $movie = $em->getRepository(Movie::class)->find($id);
+
+        $em->remove($movie);
+
+        $em->flush();
+    }
+
     public function findByTMDBId($id)
     {
         return $this->createQueryBuilder('m')

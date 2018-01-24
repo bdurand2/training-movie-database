@@ -2,6 +2,7 @@
 
 {% block content %}
 	<h1>{{ movie.getTitle() }}, sortie le {{ movie.getReleaseDate().format('d/m/Y') }}</h1>
+	<a href="{{ path('movie.edit', {'id': movie.getId()}) }}">Éditer</a>
 	<h2>Description</h2>
 	<p>{{ movie.getDescription() }}</p>
 	<h2>Équipe</h2>
