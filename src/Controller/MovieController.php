@@ -84,4 +84,17 @@ class MovieController extends Controller
         ]));
     }
 
+    /**
+     * @Route("/movie/{id}/delete", name="movie.delete", methods="DELETE")
+     */
+    public function delete($id)
+    {
+        $repository = $this->getDoctrine()
+            ->getManager()
+            ->getRepository(Movie::class);
+
+        $repository->delete($id);
+
+        return $this->redirect($this->generateUrl('movie.index'));
+    }
 }
