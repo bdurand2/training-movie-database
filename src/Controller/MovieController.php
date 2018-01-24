@@ -32,8 +32,14 @@ class MovieController extends Controller
     		->getManager()
     		->getRepository(Movie::class);
 
+        $movie = $repository->find($id);
+
+        if (!$movie) {
+            throw $this->createNotFoundException('Le film recherché n\'est pas dans la base.');
+        }
+
         return $this->render('movie.show.html.twig', [
-        	'movie' => $repository->find($id),
+        	'movie' => $movie,
         ]);
     }
 }
